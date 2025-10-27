@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 evaluate_top3_dspy_mode.py
 
@@ -10,7 +9,7 @@ Usage examples:
   # Full pipeline (LLM -> solver)
   python evaluate_top3_dspy_mode.py --tasks_csv tasks.csv --prompt_file prompt.txt --out results.csv --llm_mode on --run_solver true
 
-  # Two-stage: generate predictions only (save them)
+  # Two-stage: generate predictions only 
   python evaluate_top3_dspy_mode.py --tasks_csv tasks.csv --prompt_file prompt.txt --out predictions_only.csv --llm_mode on --run_solver false --save_predictions llm_preds.csv
 
   # Offline verification using saved predictions
@@ -28,11 +27,7 @@ from io import BytesIO
 from PIL import Image
 import pandas as pd
 from tqdm import tqdm
-
-# DSPy imports
 import dspy
-
-# Adjust this import if Task is in a submodule or package
 from task import Task
 
 # ---------------------
@@ -40,10 +35,10 @@ from task import Task
 # ---------------------
 DEFAULT_MODEL = os.environ.get("DSPY_MODEL", "openai/gpt-4o-mini")
 DATASET_TRAIN_DIR = "dataset/training/"
-DEFAULT_TIME_LIMIT = 300  # solver time limit per task (seconds)
+DEFAULT_TIME_LIMIT = 300  
 DSPY_TEMPERATURE = 0.0
 
-# Short instruction that gets added to each prompt call (keeps LLM output stable)
+# Instruction that gets added to each prompt call 
 ABSTRACTION_SHORT_GUIDE = (
     "Abstraction options (choose 3): "
     "ccg, nbccg, nbvcg, nbhcg, mcccg, lrg, ccgbr, ccgbr2, na. "
@@ -151,7 +146,7 @@ def run_evaluation(tasks_csv, prompt_file=None, predictions_file=None, out_csv="
     if "task_file" not in df_tasks.columns:
         raise ValueError("tasks_csv must contain a 'task_file' column with filenames (e.g., ddf7fa4f.json).")
 
-    # Load user prompt (long prompt) if provided
+    # Load prompt
     user_prompt = ""
     if prompt_file:
         with open(prompt_file, "r", encoding="utf8") as f:
@@ -227,7 +222,6 @@ def run_evaluation(tasks_csv, prompt_file=None, predictions_file=None, out_csv="
         parse_warn = None
 
         if llm_mode.lower() == "on":
-            # Build prompt: include the short guide and the user's long prompt, then embed the image
             image_data_uri = image_to_data_uri(train_img)
             full_prompt = (
                 ABSTRACTION_SHORT_GUIDE + "\n\n"
@@ -349,3 +343,4 @@ if __name__ == "__main__":
                         time_limit=args.time_limit)
     print(df.head())
     print("Wrote:", args.out)
+
